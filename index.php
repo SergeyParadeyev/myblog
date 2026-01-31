@@ -172,63 +172,81 @@ function toggle_order($current_order)
 
 <div class="row">
     <div class="col-md-3">
+        <!-- Категории -->
         <div class="card mb-3">
-            <div class="card-header">
-                <h5>Категории</h5>
+            <div class="card-header d-flex justify-content-between align-items-center" style="cursor: pointer;"
+                data-bs-toggle="collapse" data-bs-target="#categoriesCollapse" aria-expanded="false">
+                <h5 class="mb-0">Категории</h5>
+                <span class="toggle-icon">▼</span>
             </div>
-            <div class="list-group list-group-flush">
-                <a href="/" class="list-group-item list-group-item-action <?php echo !$category_id && !$hashtag ? 'active' : ''; ?>">
-                    Все записи
-                </a>
-                <?php foreach ($categories as $cat): ?>
-                    <a href="/?category=<?php echo $cat['id']; ?>" class="list-group-item list-group-item-action <?php echo $category_id == $cat['id'] ? 'active' : ''; ?>">
-                        <?php echo htmlspecialchars($cat['name']); ?>
+            <div class="collapse" id="categoriesCollapse">
+                <div class="list-group list-group-flush">
+                    <a href="/"
+                        class="list-group-item list-group-item-action <?php echo !$category_id && !$hashtag ? 'active' : ''; ?>">
+                        Все записи
                     </a>
-                <?php endforeach; ?>
+                    <?php foreach ($categories as $cat): ?>
+                        <a href="/?category=<?php echo $cat['id']; ?>"
+                            class="list-group-item list-group-item-action <?php echo $category_id == $cat['id'] ? 'active' : ''; ?>">
+                                <?php echo htmlspecialchars($cat['name']); ?>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
             </div>
         </div>
-        
+
+        <!-- Хештеги -->
         <?php if (!empty($popular_hashtags)): ?>
             <div class="card mb-3">
-                <div class="card-header">
-                    <h5>Популярные хештеги</h5>
+                <div class="card-header d-flex justify-content-between align-items-center" style="cursor: pointer;"
+                    data-bs-toggle="collapse" data-bs-target="#hashtagsCollapse" aria-expanded="false">
+                    <h5 class="mb-0">Популярные хештеги</h5>
+                    <span class="toggle-icon">▼</span>
                 </div>
-                <div class="card-body">
-                    <div class="hashtag-cloud">
-                        <?php foreach ($popular_hashtags as $tag): ?>
-                            <a href="/?hashtag=<?php echo urlencode($tag['name']); ?>" 
-                               class="badge bg-<?php echo $hashtag == $tag['name'] ? 'primary' : 'secondary'; ?> mb-1"
-                               style="font-size: <?php echo min(1.2, 0.8 + ($tag['count'] * 0.1)); ?>rem;">
-                                #<?php echo htmlspecialchars($tag['name']); ?>
-                                <span class="badge bg-light text-dark"><?php echo $tag['count']; ?></span>
-                            </a>
-                        <?php endforeach; ?>
+                <div class="collapse" id="hashtagsCollapse">
+                    <div class="card-body">
+                        <div class="hashtag-cloud">
+                                <?php foreach ($popular_hashtags as $tag): ?>
+                                <a href="/?hashtag=<?php echo urlencode($tag['name']); ?>"
+                                    class="badge bg-<?php echo $hashtag == $tag['name'] ? 'primary' : 'secondary'; ?> mb-1"
+                                    style="font-size: <?php echo min(1.2, 0.8 + ($tag['count'] * 0.1)); ?>rem;">
+                                    #<?php echo htmlspecialchars($tag['name']); ?>
+                                    <span class="badge bg-light text-dark"><?php echo $tag['count']; ?></span>
+                                </a>
+                                <?php endforeach; ?>
+                        </div>
                     </div>
                 </div>
             </div>
         <?php endif; ?>
-        
+
+        <!-- Поиск -->
         <div class="card">
-            <div class="card-header">
-                <h5>Поиск</h5>
+            <div class="card-header d-flex justify-content-between align-items-center" style="cursor: pointer;"
+                data-bs-toggle="collapse" data-bs-target="#searchCollapse" aria-expanded="true">
+                <h5 class="mb-0">Поиск</h5>
+                <span class="toggle-icon">▼</span>
             </div>
-            <div class="card-body">
-                <form method="get">
-                    <?php if ($category_id): ?>
-                        <input type="hidden" name="category" value="<?php echo $category_id; ?>">
-                    <?php endif; ?>
-                    <?php if ($hashtag): ?>
-                        <input type="hidden" name="hashtag" value="<?php echo htmlspecialchars($hashtag); ?>">
-                    <?php endif; ?>
-                    <input type="hidden" name="sort" value="<?php echo htmlspecialchars($sort_by); ?>">
-                    <input type="hidden" name="order" value="<?php echo htmlspecialchars($sort_order); ?>">
-                    <input type="text" name="search" class="form-control" placeholder="Поиск..." value="<?php echo htmlspecialchars($search); ?>">
-                    <button type="submit" class="btn btn-primary w-100 mt-2">Искать</button>
-                </form>
+            <div class="collapse show" id="searchCollapse">
+                <div class="card-body">
+                    <form method="get">
+                        <?php if ($category_id): ?>
+                            <input type="hidden" name="category" value="<?php echo $category_id; ?>">
+                        <?php endif; ?>
+                        <?php if ($hashtag): ?>
+                            <input type="hidden" name="hashtag" value="<?php echo htmlspecialchars($hashtag); ?>">
+                        <?php endif; ?>
+                        <input type="hidden" name="sort" value="<?php echo htmlspecialchars($sort_by); ?>">
+                        <input type="hidden" name="order" value="<?php echo htmlspecialchars($sort_order); ?>">
+                        <input type="text" name="search" class="form-control" placeholder="Поиск..."
+                            value="<?php echo htmlspecialchars($search); ?>">
+                        <button type="submit" class="btn btn-primary w-100 mt-2">Искать</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-9">
         <?php if ($hashtag): ?>
             <div class="alert alert-info">
@@ -236,14 +254,14 @@ function toggle_order($current_order)
                 <a href="/" class="btn btn-sm btn-secondary float-end">Сбросить</a>
             </div>
         <?php endif; ?>
-        
+
         <?php if ($search): ?>
             <div class="alert alert-info">
                 Результаты поиска: <strong><?php echo htmlspecialchars($search); ?></strong>
                 <a href="/" class="btn btn-sm btn-secondary float-end">Сбросить</a>
             </div>
         <?php endif; ?>
-        
+
         <!-- Панель сортировки -->
         <div class="card mb-3">
             <div class="card-body">
@@ -253,35 +271,35 @@ function toggle_order($current_order)
                     </div>
                     <div class="btn-group" role="group">
                         <!-- Сортировка по дате -->
-                        <a href="/?<?php echo build_query_string(['sort' => 'date', 'order' => $sort_by === 'date' ? toggle_order($sort_order) : 'desc']); ?>" 
-                           class="btn btn-sm <?php echo $sort_by === 'date' ? 'btn-primary' : 'btn-outline-primary'; ?>">
+                        <a href="/?<?php echo build_query_string(['sort' => 'date', 'order' => $sort_by === 'date' ? toggle_order($sort_order) : 'desc']); ?>"
+                            class="btn btn-sm <?php echo $sort_by === 'date' ? 'btn-primary' : 'btn-outline-primary'; ?>">
                             По дате
                             <?php if ($sort_by === 'date'): ?>
-                                    <?php if ($sort_order === 'desc'): ?>
-                                            <i class="bi bi-arrow-down">↓</i>
-                                    <?php else: ?>
-                                            <i class="bi bi-arrow-up">↑</i>
-                                    <?php endif; ?>
+                                <?php if ($sort_order === 'desc'): ?>
+                                    <i class="bi bi-arrow-down">↓</i>
+                                <?php else: ?>
+                                    <i class="bi bi-arrow-up">↑</i>
+                                <?php endif; ?>
                             <?php endif; ?>
                         </a>
-                        
+
                         <!-- Сортировка по заголовку -->
-                        <a href="/?<?php echo build_query_string(['sort' => 'title', 'order' => $sort_by === 'title' ? toggle_order($sort_order) : 'asc']); ?>" 
-                           class="btn btn-sm <?php echo $sort_by === 'title' ? 'btn-primary' : 'btn-outline-primary'; ?>">
+                        <a href="/?<?php echo build_query_string(['sort' => 'title', 'order' => $sort_by === 'title' ? toggle_order($sort_order) : 'asc']); ?>"
+                            class="btn btn-sm <?php echo $sort_by === 'title' ? 'btn-primary' : 'btn-outline-primary'; ?>">
                             По названию
                             <?php if ($sort_by === 'title'): ?>
-                                    <?php if ($sort_order === 'asc'): ?>
-                                            <i class="bi bi-arrow-up">↑</i>
-                                    <?php else: ?>
-                                            <i class="bi bi-arrow-down">↓</i>
-                                    <?php endif; ?>
+                                <?php if ($sort_order === 'asc'): ?>
+                                    <i class="bi bi-arrow-up">↑</i>
+                                <?php else: ?>
+                                    <i class="bi bi-arrow-down">↓</i>
+                                <?php endif; ?>
                             <?php endif; ?>
                         </a>
                     </div>
                 </div>
             </div>
         </div>
-        
+
         <?php if (empty($posts)): ?>
             <div class="alert alert-info">
                 <?php if ($hashtag || $search || $category_id): ?>
@@ -300,7 +318,7 @@ function toggle_order($current_order)
                             </a>
                         </h2>
                         <p class="text-muted small">
-                            <?php echo date('d.m.Y H:i', strtotime($post['created_at'])); ?> 
+                            <?php echo date('d.m.Y H:i', strtotime($post['created_at'])); ?>
                             | Автор: <?php echo htmlspecialchars($post['username']); ?>
                             <?php if ($post['category_name']): ?>
                                 | Категория: <?php echo htmlspecialchars($post['category_name']); ?>
@@ -318,7 +336,7 @@ function toggle_order($current_order)
                     </div>
                 </div>
             <?php endforeach; ?>
-        
+
             <?php if ($total_pages > 1): ?>
                 <nav>
                     <ul class="pagination">

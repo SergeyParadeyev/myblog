@@ -19,6 +19,8 @@ $(document).ready(function () {
         if (markdown) {
             var html = marked.parse(markdown);
             $(this).html(html);
+
+            // Подсветка синтаксиса
             hljs.highlightAll();
 
             // Добавление кнопок копирования к блокам кода
@@ -47,6 +49,53 @@ $(document).ready(function () {
                 pre.wrap(wrapper);
                 pre.before(header);
             });
+        }
+    });
+
+    // Обработка раскрывающихся блоков
+    $('[data-bs-toggle="collapse"]').on('click', function () {
+        var target = $(this).attr('data-bs-target');
+        var icon = $(this).find('.toggle-icon');
+
+        // Обновление атрибута aria-expanded
+        var isExpanded = $(target).hasClass('show');
+        $(this).attr('aria-expanded', !isExpanded);
+    });
+
+    // Сохранение состояния раскрывающихся блоков в localStorage
+    $('.collapse').on('shown.bs.collapse', function () {
+        var id = $(this).attr('id');
+        localStorage.setItem('collapse_' + id, 'open');
+    });
+
+    $('.collapse').on('hidden.bs.collapse', function () {
+        var id = $(this).attr('id');
+        localStorage.setItem('collapse_' + id, 'closed');
+    });
+
+    // Восстановление состояния при загрузке страницы
+    $('.collapse').each(function () {
+        var id = $(this).attr('id');
+        var state = localStorage.getItem('collapse_' + id);
+
+        // Для категорий и хештегов по умолчанию свернуто
+        if (id === 'categoriesCollapse' || id === 'hashtagsCollapse') {
+            if (state === 'open') {
+                $(this).addClass('show');
+                $(this).prev('.card-header').attr('aria-expanded', 'true');
+            } else {
+                $(this).removeClass('show');
+                $(this).prev('.card-header').attr('aria-expanded', 'false');
+            }
+        } else {
+            // Для остальных (поиск) - по умолчанию развернуто
+            if (state === 'closed') {
+                $(this).removeClass('show');
+                $(this).prev('.card-header').attr('aria-expanded', 'false');
+            } else {
+                $(this).addClass('show');
+                $(this).prev('.card-header').attr('aria-expanded', 'true');
+            }
         }
     });
 

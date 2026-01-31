@@ -275,3 +275,38 @@ footer {
     color: #24292e !important;
     padding: 1rem !important;
 }
+
+/* В конец файла добавить */
+
+/* Раскрывающиеся блоки */
+.card-header[data-bs-toggle="collapse"] {
+    user-select: none;
+    transition: background-color 0.2s;
+}
+
+.card-header[data-bs-toggle="collapse"]:hover {
+    background-color: #f8f9fa;
+}
+
+.toggle-icon {
+    transition: transform 0.3s ease;
+    display: inline-block;
+    font-size: 0.8rem;
+}
+
+.card-header[aria-expanded="true"] .toggle-icon {
+    transform: rotate(180deg);
+}
+
+.card-header h5 {
+    margin: 0;
+}
+
+/* Плавная анимация сворачивания */
+.collapse {
+    transition: height 0.3s ease;
+}
+
+.collapsing {
+    transition: height 0.3s ease;
+}

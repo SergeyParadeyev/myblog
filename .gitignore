@@ -1,0 +1,29 @@
+# База данных
+db/database.db
+
+# Загруженные файлы
+uploads/*
+!uploads/.gitkeep
+
+# Системные файлы
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Временные файлы
+*.log
+*.tmp
+
+# Конфигурация (если есть секреты)
+config.local.php
+
+# Не коммитить CLI скрипты на продакшен (опционально)
+# create_admin.php
+# disable_default_admin.php
+# change_password.php
+# list_users.php

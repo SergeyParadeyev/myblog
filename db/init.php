@@ -43,11 +43,26 @@ function init_database()
         content TEXT NOT NULL,
         category_id INTEGER,
         user_id INTEGER NOT NULL,
+        visibility INTEGER NOT NULL DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
     )");
+
+    // Проверка и добавление поля visibility для существующих баз
+    $columns = $db->query("PRAGMA table_info(posts)");
+    $has_visibility = false;
+    while ($column = $columns->fetchArray(SQLITE3_ASSOC)) {
+        if ($column['name'] === 'visibility') {
+            $has_visibility = true;
+            break;
+        }
+    }
+
+    if (!$has_visibility) {
+        $db->exec("ALTER TABLE posts ADD COLUMN visibility INTEGER NOT NULL DEFAULT 0");
+    }
 
     // Таблица хештегов
     $db->exec("CREATE TABLE IF NOT EXISTS hashtags (
@@ -106,5 +121,8 @@ function init_database()
 
 // Инициализация при первом запуске
 if (!file_exists(DB_PATH)) {
+    init_database();
+} else {
+    // Проверка и обновление существующей базы
     init_database();
 }

@@ -310,3 +310,51 @@ footer {
 .collapsing {
     transition: height 0.3s ease;
 }
+
+/* В конец файла добавить */
+
+/* Стили для админки */
+.admin-posts-table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.admin-posts-table th,
+.admin-posts-table td {
+    vertical-align: middle;
+}
+
+.admin-posts-table .actions-column {
+    white-space: nowrap;
+}
+
+.admin-posts-table .btn-group-vertical {
+    width: 100%;
+}
+
+.admin-posts-table .btn-group-vertical .btn {
+    white-space: nowrap;
+    margin-bottom: 2px;
+}
+
+.admin-posts-table .btn-group-vertical .btn:last-child {
+    margin-bottom: 0;
+}
+
+.admin-posts-table .text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Адаптивность для таблиц */
+@media (max-width: 992px) {
+    .admin-posts-table {
+        table-layout: auto;
+    }
+
+    .admin-posts-table th,
+    .admin-posts-table td {
+        font-size: 0.875rem;
+    }
+}

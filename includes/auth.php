@@ -57,3 +57,64 @@ function is_author()
     $user = get_logged_user();
     return $user['role'] == ROLE_AUTHOR;
 }
+
+function get_user_role()
+{
+    if (!is_logged_in()) {
+        return ROLE_GUEST;
+    }
+    $user = get_logged_user();
+    return $user['role'];
+}
+
+function can_view_post($post_visibility)
+{
+    $user_role = get_user_role();
+
+    // Администратор видит всё
+    if ($user_role == ROLE_AUTHOR) {
+        return true;
+    }
+
+    // Авторизованный пользователь видит публичные и для авторизованных
+    if ($user_role >= ROLE_TRUSTED && $post_visibility <= VISIBILITY_AUTHORIZED) {
+        return true;
+    }
+
+    // Гость видит только публичные
+    if ($post_visibility == VISIBILITY_PUBLIC) {
+        return true;
+    }
+
+    return false;
+}
+
+function get_visibility_sql_condition()
+{
+    $user_role = get_user_role();
+
+    if ($user_role == ROLE_AUTHOR) {
+        // Администратор видит все посты
+        return "1=1";
+    } elseif ($user_role >= ROLE_TRUSTED) {
+        // Авторизованные видят публичные и для авторизованных
+        return "p.visibility IN (" . VISIBILITY_PUBLIC . ", " . VISIBILITY_AUTHORIZED . ")";
+    } else {
+        // Гости видят только публичные
+        return "p.visibility = " . VISIBILITY_PUBLIC;
+    }
+}
+
+function get_visibility_name($visibility)
+{
+    switch ($visibility) {
+        case VISIBILITY_PUBLIC:
+            return 'Публичный';
+        case VISIBILITY_AUTHORIZED:
+            return 'Для авторизованных';
+        case VISIBILITY_ADMIN:
+            return 'Только для администратора';
+        default:
+            return 'Неизвестно';
+    }
+}

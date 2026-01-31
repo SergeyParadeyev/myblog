@@ -28,8 +28,11 @@ $page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
 $per_page = POSTS_PER_PAGE;
 $offset = ($page - 1) * $per_page;
 
+// Получение условия видимости
+$visibility_condition = get_visibility_sql_condition();
+
 // Подсчет общего количества постов
-$where_conditions = [];
+$where_conditions = [$visibility_condition];
 $params = [];
 $join_hashtag = '';
 
@@ -51,10 +54,7 @@ if ($hashtag) {
 }
 
 $count_query = "SELECT COUNT(DISTINCT p.id) as total FROM posts p " . $join_hashtag;
-
-if (!empty($where_conditions)) {
-    $count_query .= " WHERE " . implode(' AND ', $where_conditions);
-}
+$count_query .= " WHERE " . implode(' AND ', $where_conditions);
 
 $stmt = $db->prepare($count_query);
 foreach ($params as $key => $value) {
@@ -78,10 +78,7 @@ $query = "SELECT DISTINCT p.*, c.name as category_name, u.username
           LEFT JOIN categories c ON p.category_id = c.id 
           LEFT JOIN users u ON p.user_id = u.id";
 
-if (!empty($where_conditions)) {
-    $query .= " WHERE " . implode(' AND ', $where_conditions);
-}
-
+$query .= " WHERE " . implode(' AND ', $where_conditions);
 $query .= " ORDER BY " . $order_clause . " LIMIT :limit OFFSET :offset";
 
 $stmt = $db->prepare($query);
@@ -316,6 +313,14 @@ function toggle_order($current_order)
                             <a href="/post.php?slug=<?php echo urlencode($post['slug']); ?>">
                                 <?php echo htmlspecialchars($post['title']); ?>
                             </a>
+                            <?php if (is_author()): ?>
+                                <span class="badge bg-<?php
+                                echo $post['visibility'] == VISIBILITY_PUBLIC ? 'success' :
+                                    ($post['visibility'] == VISIBILITY_AUTHORIZED ? 'warning' : 'danger');
+                                ?> ms-2" style="font-size: 0.6rem;">
+                                    <?php echo get_visibility_name($post['visibility']); ?>
+                                </span>
+                            <?php endif; ?>
                         </h2>
                         <p class="text-muted small">
                             <?php echo date('d.m.Y H:i', strtotime($post['created_at'])); ?>

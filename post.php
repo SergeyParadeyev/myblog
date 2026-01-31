@@ -25,6 +25,11 @@ if (!$post) {
     die('Запись не найдена');
 }
 
+// Проверка прав доступа к посту
+if (!can_view_post($post['visibility'])) {
+    die('<h1>Доступ запрещен</h1><p>У вас нет прав для просмотра этой записи. <a href="/">Вернуться на главную</a></p>');
+}
+
 // Получение хештегов
 $stmt = $db->prepare("SELECT h.name 
                       FROM hashtags h 
@@ -76,7 +81,17 @@ require_once 'includes/header.php';
     <div class="col-md-12">
         <article class="card mb-4">
             <div class="card-body">
-                <h1><?php echo htmlspecialchars($post['title']); ?></h1>
+                <h1>
+                    <?php echo htmlspecialchars($post['title']); ?>
+                    <?php if (is_author()): ?>
+                        <span class="badge bg-<?php
+                        echo $post['visibility'] == VISIBILITY_PUBLIC ? 'success' :
+                            ($post['visibility'] == VISIBILITY_AUTHORIZED ? 'warning' : 'danger');
+                        ?>" style="font-size: 0.6rem;">
+                            <?php echo get_visibility_name($post['visibility']); ?>
+                        </span>
+                    <?php endif; ?>
+                </h1>
                 <p class="text-muted">
                     <?php echo date('d.m.Y H:i', strtotime($post['created_at'])); ?>
                     | Автор: <?php echo htmlspecialchars($post['username']); ?>
@@ -88,11 +103,11 @@ require_once 'includes/header.php';
 
                 <?php if (!empty($hashtags)): ?>
                     <div class="mb-3">
-                            <?php foreach ($hashtags as $tag): ?>
+                        <?php foreach ($hashtags as $tag): ?>
                             <a href="/?hashtag=<?php echo urlencode($tag); ?>" class="badge bg-secondary text-decoration-none">
                                 #<?php echo htmlspecialchars($tag); ?>
                             </a>
-                            <?php endforeach; ?>
+                        <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
 
@@ -140,21 +155,21 @@ require_once 'includes/header.php';
                 <?php if (empty($comments)): ?>
                     <p class="text-muted">Комментариев пока нет.</p>
                 <?php else: ?>
-                        <?php foreach ($comments as $comment): ?>
+                    <?php foreach ($comments as $comment): ?>
                         <div class="card mb-2">
                             <div class="card-body">
                                 <p class="mb-1"><?php echo nl2br(htmlspecialchars($comment['content'])); ?></p>
                                 <small class="text-muted">
-                                            <?php echo htmlspecialchars($comment['username']); ?>
+                                    <?php echo htmlspecialchars($comment['username']); ?>
                                     | <?php echo date('d.m.Y H:i', strtotime($comment['created_at'])); ?>
-                                            <?php if (is_author()): ?>
+                                    <?php if (is_author()): ?>
                                         | <a href="/admin/comment_delete.php?id=<?php echo $comment['id']; ?>&post_slug=<?php echo urlencode($slug); ?>"
                                             onclick="return confirm('Удалить комментарий?')">Удалить</a>
-                                            <?php endif; ?>
+                                    <?php endif; ?>
                                 </small>
                             </div>
                         </div>
-                        <?php endforeach; ?>
+                    <?php endforeach; ?>
                 <?php endif; ?>
             </div>
         </div>

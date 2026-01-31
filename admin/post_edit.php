@@ -42,23 +42,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $content = trim($_POST['content']);
     $category_id = !empty($_POST['category_id']) ? (int) $_POST['category_id'] : null;
     $hashtags_input = trim($_POST['hashtags']);
+    $visibility = isset($_POST['visibility']) ? (int) $_POST['visibility'] : VISIBILITY_PUBLIC;
+
+    // Валидация видимости
+    if (!in_array($visibility, [VISIBILITY_PUBLIC, VISIBILITY_AUTHORIZED, VISIBILITY_ADMIN])) {
+        $visibility = VISIBILITY_PUBLIC;
+    }
 
     if (empty($title) || empty($content)) {
         $error = 'Заполните обязательные поля';
     } else {
         // Обновление записи
-        $stmt = $db->prepare("UPDATE posts SET title = :title, content = :content, category_id = :category_id, updated_at = CURRENT_TIMESTAMP WHERE id = :id");
+        $stmt = $db->prepare("UPDATE posts SET title = :title, content = :content, category_id = :category_id, visibility = :visibility, updated_at = CURRENT_TIMESTAMP WHERE id = :id");
         $stmt->bindValue(':title', $title, SQLITE3_TEXT);
         $stmt->bindValue(':content', $content, SQLITE3_TEXT);
         $stmt->bindValue(':category_id', $category_id, SQLITE3_INTEGER);
+        $stmt->bindValue(':visibility', $visibility, SQLITE3_INTEGER);
         $stmt->bindValue(':id', $post_id, SQLITE3_INTEGER);
         $stmt->execute();
 
-        // Удаление старых хештегов
-        $stmt = $db->prepare("DELETE FROM post_hashtags WHERE post_id = :post_id");
-        $stmt->bindValue(':post_id', $post_id, SQLITE3_INTEGER);
-        $stmt->execute();
-
+        // ... остальной код с хештегами
         // Добавление новых хештегов
         if (!empty($hashtags_input)) {
             $hashtags = array_map('trim', explode(',', $hashtags_input));
@@ -80,7 +83,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $hashtag_id = $hashtag['id'];
                 }
 
-                $stmt = $db->prepare("INSERT INTO post_hashtags (post_id, hashtag_id) VALUES (:post_id, :hashtag_id)");
+                $stmt = $db->prepare(
+                    "INSERT OR IGNORE INTO post_hashtags (post_id, hashtag_id)
+                     VALUES (:post_id, :hashtag_id)"
+                );
                 $stmt->bindValue(':post_id', $post_id, SQLITE3_INTEGER);
                 $stmt->bindValue(':hashtag_id', $hashtag_id, SQLITE3_INTEGER);
                 $stmt->execute();
@@ -113,7 +119,7 @@ require_once __DIR__ . '/../includes/header.php';
         <?php if ($error): ?>
             <div class="alert alert-danger">
                 <?php echo htmlspecialchars($error); ?>
-                </div>
+            </div>
         <?php endif; ?>
 
         <div class="card">
@@ -131,13 +137,27 @@ require_once __DIR__ . '/../includes/header.php';
                             <option value="">Без категории</option>
                             <?php foreach ($categories as $cat): ?>
 
-                                                                   <option value="<?php echo $cat['id']; ?>" <?php echo $post['category_id'] == $cat['id'] ? 'selected' : ''; ?>>
+                                <option value="<?php echo $cat['id']; ?>" <?php echo $post['category_id'] == $cat['id'] ? 'selected' : ''; ?>>
                                     <?php echo htmlspecialchars($cat['name']); ?>
-                                    </option>
+                                </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
-
+                    <div class="mb-3">
+                        <label class="form-label">Видимость *</label>
+                        <select name="visibility" class="form-control">
+                            <option value="<?php echo VISIBILITY_PUBLIC; ?>" <?php echo $post['visibility'] == VISIBILITY_PUBLIC ? 'selected' : ''; ?>>
+                                Публичный (видно всем, включая гостей)
+                            </option>
+                            <option value="<?php echo VISIBILITY_AUTHORIZED; ?>" <?php echo $post['visibility'] == VISIBILITY_AUTHORIZED ? 'selected' : ''; ?>>
+                                Для авторизованных (только для зарегистрированных)
+                            </option>
+                            <option value="<?php echo VISIBILITY_ADMIN; ?>" <?php echo $post['visibility'] == VISIBILITY_ADMIN ? 'selected' : ''; ?>>
+                                Только для администратора
+                            </option>
+                        </select>
+                        <small class="text-muted">Выберите, кто может видеть эту запись</small>
+                    </div>
                     <div class="mb-3">
                         <label class="form-label">Хештеги (через запятую)</label>
                         <input type="text" name="hashtags" class="form-control"

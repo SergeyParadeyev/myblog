@@ -13,6 +13,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $content = trim($_POST['content']);
     $category_id = !empty($_POST['category_id']) ? (int) $_POST['category_id'] : null;
     $hashtags_input = trim($_POST['hashtags']);
+    $visibility = isset($_POST['visibility']) ? (int) $_POST['visibility'] : VISIBILITY_PUBLIC;
+
+    // Валидация видимости
+    if (!in_array($visibility, [VISIBILITY_PUBLIC, VISIBILITY_AUTHORIZED, VISIBILITY_ADMIN])) {
+        $visibility = VISIBILITY_PUBLIC;
+    }
 
     if (empty($title) || empty($content)) {
         $error = 'Заполните обязательные поля';
@@ -32,13 +38,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Создание записи
-        $stmt = $db->prepare("INSERT INTO posts (title, slug, content, category_id, user_id) 
-                              VALUES (:title, :slug, :content, :category_id, :user_id)");
+        $stmt = $db->prepare("INSERT INTO posts (title, slug, content, category_id, user_id, visibility) 
+                              VALUES (:title, :slug, :content, :category_id, :user_id, :visibility)");
         $stmt->bindValue(':title', $title, SQLITE3_TEXT);
         $stmt->bindValue(':slug', $slug, SQLITE3_TEXT);
         $stmt->bindValue(':content', $content, SQLITE3_TEXT);
         $stmt->bindValue(':category_id', $category_id, SQLITE3_INTEGER);
         $stmt->bindValue(':user_id', $_SESSION['user_id'], SQLITE3_INTEGER);
+        $stmt->bindValue(':visibility', $visibility, SQLITE3_INTEGER);
         $stmt->execute();
 
         $post_id = $db->lastInsertRowID();
@@ -98,9 +105,7 @@ require_once __DIR__ . '/../includes/header.php';
         <h1>Создание записи</h1>
 
         <?php if ($error): ?>
-            <div class="alert alert-danger">
-                <?php echo htmlspecialchars($error); ?>
-                </div>
+            <div class="alert alert-danger"><?php echo htmlspecialchars($error); ?></div>
         <?php endif; ?>
 
         <div class="card">
@@ -116,12 +121,22 @@ require_once __DIR__ . '/../includes/header.php';
                         <select name="category_id" class="form-control">
                             <option value="">Без категории</option>
                             <?php foreach ($categories as $cat): ?>
-
-                                                                <option value="<?php echo $cat['id']; ?>">
-                                        <?php echo htmlspecialchars($cat['name']); ?>
-                                    </option>
+                                <option value="<?php echo $cat['id']; ?>"><?php echo htmlspecialchars($cat['name']); ?>
+                                </option>
                             <?php endforeach; ?>
                         </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Видимость *</label>
+                        <select name="visibility" class="form-control">
+                            <option value="<?php echo VISIBILITY_PUBLIC; ?>">Публичный (видно всем, включая гостей)
+                            </option>
+                            <option value="<?php echo VISIBILITY_AUTHORIZED; ?>">Для авторизованных (только для
+                                зарегистрированных)</option>
+                            <option value="<?php echo VISIBILITY_ADMIN; ?>">Только для администратора</option>
+                        </select>
+                        <small class="text-muted">Выберите, кто может видеть эту запись</small>
                     </div>
 
                     <div class="mb-3">

@@ -1,7 +1,7 @@
 <?php
 // Основные настройки приложения
-define('SITE_NAME', 'Микро-Блог'); // Название сайта
-define('SITE_DESCRIPTION', 'Персональный микро-блог'); // Описание сайта
+define('SITE_NAME', 'Мой Блог'); // Название сайта
+define('SITE_DESCRIPTION', 'Персональный блог'); // Описание сайта
 define('SITE_AUTHOR', 'Администратор'); // Автор по умолчанию
 
 // Пути и файлы
@@ -69,6 +69,11 @@ define('ALLOWED_EXTENSIONS', [
 define('ROLE_GUEST', 0);
 define('ROLE_TRUSTED', 1);
 define('ROLE_AUTHOR', 2);
+
+// Уровни видимости постов
+define('VISIBILITY_PUBLIC', 0);      // Видно всем (включая гостей)
+define('VISIBILITY_AUTHORIZED', 1);  // Видно только авторизованным
+define('VISIBILITY_ADMIN', 2);       // Видно только администраторам
 
 // Настройки отображения
 define('POSTS_PER_PAGE', 10); // Постов на странице

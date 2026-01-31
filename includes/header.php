@@ -7,6 +7,16 @@ $site_title = SITE_NAME;
 if (isset($page_title)) {
     $site_title = htmlspecialchars($page_title) . ' - ' . SITE_NAME;
 }
+
+// Определение темы
+$theme = 'light'; // По умолчанию
+if (isset($_COOKIE['theme']) && in_array($_COOKIE['theme'], ['light', 'dark'])) {
+    $theme = $_COOKIE['theme'];
+} elseif (isset($_SESSION['theme']) && in_array($_SESSION['theme'], ['light', 'dark'])) {
+    $theme = $_SESSION['theme'];
+}
+
+$theme_file = $theme === 'dark' ? 'style_dark.css' : 'style.css';
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -19,7 +29,8 @@ if (isset($page_title)) {
     <title><?php echo $site_title; ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.10.0/styles/vs.min.css">
-    <link href="/assets/css/style.css" rel="stylesheet">
+    <!-- <link href="/assets/css/style.css" rel="stylesheet"> -->
+    <link href="/assets/css/<?php echo $theme_file; ?>" rel="stylesheet">
 </head>
 
 <body>
@@ -39,6 +50,12 @@ if (isset($page_title)) {
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="/">Главная</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"
+                            href="/theme_switcher.php?theme=<?php echo $theme === 'dark' ? 'light' : 'dark'; ?>">
+                            <?php echo $theme === 'dark' ? '☀ Светлая' : '🌙 Темная'; ?>
+                        </a>
                     </li>
                     <?php if (is_author()): ?>
                         <li class="nav-item">

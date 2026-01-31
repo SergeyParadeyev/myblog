@@ -1,7 +1,8 @@
 </main>
 <footer class="bg-light mt-5 py-3">
     <div class="container text-center">
-        <p class="mb-0">&copy; <?php echo date('Y'); ?> Мой Блог. Все права защищены.</p>
+        <p class="mb-0">&copy; <?php echo date('Y'); ?> <?php echo htmlspecialchars(SITE_NAME); ?>. Все права защищены.
+        </p>
     </div>
 </footer>
 

@@ -25,7 +25,7 @@ if (!in_array($sort_order, $allowed_order)) {
 
 // Пагинация
 $page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
-$per_page = 10;
+$per_page = POSTS_PER_PAGE;
 $offset = ($page - 1) * $per_page;
 
 // Подсчет общего количества постов
@@ -188,7 +188,7 @@ function toggle_order($current_order)
                     <?php foreach ($categories as $cat): ?>
                         <a href="/?category=<?php echo $cat['id']; ?>"
                             class="list-group-item list-group-item-action <?php echo $category_id == $cat['id'] ? 'active' : ''; ?>">
-                                <?php echo htmlspecialchars($cat['name']); ?>
+                            <?php echo htmlspecialchars($cat['name']); ?>
                         </a>
                     <?php endforeach; ?>
                 </div>
@@ -206,14 +206,14 @@ function toggle_order($current_order)
                 <div class="collapse" id="hashtagsCollapse">
                     <div class="card-body">
                         <div class="hashtag-cloud">
-                                <?php foreach ($popular_hashtags as $tag): ?>
+                            <?php foreach ($popular_hashtags as $tag): ?>
                                 <a href="/?hashtag=<?php echo urlencode($tag['name']); ?>"
                                     class="badge bg-<?php echo $hashtag == $tag['name'] ? 'primary' : 'secondary'; ?> mb-1"
                                     style="font-size: <?php echo min(1.2, 0.8 + ($tag['count'] * 0.1)); ?>rem;">
                                     #<?php echo htmlspecialchars($tag['name']); ?>
                                     <span class="badge bg-light text-dark"><?php echo $tag['count']; ?></span>
                                 </a>
-                                <?php endforeach; ?>
+                            <?php endforeach; ?>
                         </div>
                     </div>
                 </div>

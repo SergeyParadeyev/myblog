@@ -25,7 +25,13 @@ if (isset($page_title)) {
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="/"><?php echo htmlspecialchars(SITE_NAME); ?></a>
+            <a class="navbar-brand d-flex flex-column" href="/">
+                <span class="fw-semibold"><?php echo htmlspecialchars(SITE_NAME); ?></span>
+                <small class="text-white-50" style="font-size: 0.75rem;">
+                    <?php echo htmlspecialchars(SITE_DESCRIPTION); ?>
+                </small>
+            </a>
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>

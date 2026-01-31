@@ -1,7 +1,7 @@
 <?php
 // Основные настройки приложения
-define('SITE_NAME', 'Мой Блог'); // Название сайта
-define('SITE_DESCRIPTION', 'Персональный блог'); // Описание сайта
+define('SITE_NAME', 'Осмысленно'); // Название сайта
+define('SITE_DESCRIPTION', 'Технические заметки и мысли по делу'); // Описание сайта
 define('SITE_AUTHOR', 'Администратор'); // Автор по умолчанию
 
 // Пути и файлы
@@ -76,7 +76,7 @@ define('VISIBILITY_AUTHORIZED', 1);  // Видно только авторизо
 define('VISIBILITY_ADMIN', 2);       // Видно только администраторам
 
 // Настройки отображения
-define('POSTS_PER_PAGE', 10); // Постов на странице
+define('POSTS_PER_PAGE', 5); // Постов на странице
 
 // Запуск сессии
 if (session_status() === PHP_SESSION_NONE) {

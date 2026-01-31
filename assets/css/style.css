@@ -204,3 +204,34 @@ footer {
 .hashtag-cloud .badge .badge {
     margin-left: 0.25rem;
 }
+
+/* Панель сортировки */
+.btn-group .btn {
+    white-space: nowrap;
+}
+
+.btn-group .btn i {
+    margin-left: 0.25rem;
+    font-style: normal;
+}
+
+/* Улучшенная панель сортировки */
+.card-body .btn-group {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Адаптивность для мобильных */
+@media (max-width: 576px) {
+    .card-body .d-flex {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .card-body .btn-group {
+        width: 100%;
+    }
+
+    .card-body .btn-group .btn {
+        flex: 1;
+    }
+}

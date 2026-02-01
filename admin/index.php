@@ -14,6 +14,8 @@ $posts_count = $db->querySingle("SELECT COUNT(*) FROM posts");
 $comments_count = $db->querySingle("SELECT COUNT(*) FROM comments");
 $categories_count = $db->querySingle("SELECT COUNT(*) FROM categories");
 $files_count = $db->querySingle("SELECT COUNT(*) FROM files");
+$feedback_count = $db->querySingle("SELECT COUNT(*) FROM feedback WHERE status = 'new'");
+
 
 $db->close();
 ?>
@@ -70,6 +72,17 @@ $db->close();
                 </h2>
                 <p>Файлов</p>
                 <a href="/admin/files.php" class="btn btn-primary">Управление</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h2><?php echo $feedback_count; ?>
+                </h2>
+                <p>Новых сообщений</p>
+                <a href="/admin/feedback.php" class="btn btn-primary">Управление</a>
             </div>
         </div>
     </div>

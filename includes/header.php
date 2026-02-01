@@ -77,6 +77,9 @@ $theme_file = $theme === 'dark' ? 'style_dark.css' : 'style.css';
                             <a class="nav-link" href="/register.php">Регистрация</a>
                         </li>
                     <?php endif; ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/feedback.php">Обратная связь</a>
+                    </li>
                 </ul>
             </div>
         </div>

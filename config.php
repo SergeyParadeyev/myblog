@@ -8,6 +8,10 @@ define('SITE_AUTHOR', 'Администратор'); // Автор по умол
 define('DB_PATH', __DIR__ . '/db/database.db');
 define('UPLOAD_DIR', __DIR__ . '/uploads/');
 
+// Настройки обратной связи
+define('FEEDBACK_EMAIL', 'admin@example.com'); // Email для получения уведомлений
+define('FEEDBACK_ENABLED', true); // Включить/выключить форму обратной связи// Настройки обратной связи
+
 // Ограничения загрузки
 define('MAX_FILE_SIZE', 50 * 1024 * 1024); // 50MB
 define('ALLOWED_EXTENSIONS', [

@@ -1,4 +1,6 @@
 <?php
+date_default_timezone_set('Europe/Kyiv');
+
 // Основные настройки приложения
 define('SITE_NAME', 'Осмысленно'); // Название сайта
 define('SITE_DESCRIPTION', 'Технические заметки и мысли по делу'); // Описание сайта
@@ -63,6 +65,7 @@ define('ALLOWED_EXTENSIONS', [
     'c',
     'cpp',
     'h',
+    'sh',
     'sql',
     // Другое
     'csv',
@@ -80,7 +83,7 @@ define('VISIBILITY_AUTHORIZED', 1);  // Видно только авторизо
 define('VISIBILITY_ADMIN', 2);       // Видно только администраторам
 
 // Настройки отображения
-define('POSTS_PER_PAGE', 5); // Постов на странице
+define('POSTS_PER_PAGE', 3); // Постов на странице
 
 // Запуск сессии
 if (session_status() === PHP_SESSION_NONE) {
